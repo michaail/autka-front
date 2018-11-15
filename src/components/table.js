@@ -1,27 +1,50 @@
 import React, { Component } from 'react';
 import ReactTable from 'react-table';
+// import axios from 'axios';
 
 export default class Table extends Component {
   constructor(props) {
     super(props);
-    const { content } = this.props;
+    const { documents } = this.props;
     this.state = {
-      data: content,
+      documents,
+      meta: {},
     };
+
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentWillReceiveProps(newProps) {
-    const { content } = newProps;
+    const { documents, meta } = newProps;
     this.setState({
-      data: content,
+      documents,
+      meta,
     });
   }
 
+  handleChange(state, instance) {
+    fetch(`http://localhost:3001/api/lots?page=${state.page + 1}&per_page=${state.pageSize}`)
+      .then(recvData => recvData.json())
+      .then((json) => {
+        const { documents, meta } = json;
+        this.setState({
+          documents,
+          meta,
+        });
+      });
+  }
+
   render() {
-    const { data } = this.state;
+    const { documents, meta } = this.state;
+
+    console.log('render');
     const tab = (
       <ReactTable
-        data={data}
+
+        data={documents}
+        pages={meta.pages_count}
+
+        manual
         columns={[
           {
             Header: 'LotID',
@@ -65,7 +88,10 @@ export default class Table extends Component {
             accessor: 'location',
           },
         ]}
+
+        onFetchData={this.handleChange}
         className="-striped -highlight"
+
       />
     );
     return (

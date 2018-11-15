@@ -11,17 +11,21 @@ export default class TableSearch extends Component {
       lotId: '',
       make: '',
       model: '',
-      table: [],
+      documents: [],
+      meta: {},
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   async componentDidMount() {
-    const queryString = 'http://localhost:3001/api/lots/';
+    const queryString = 'http://localhost:3001/api/lots';
     const data = await fetch(queryString).then(response => response.json());
 
+    const { documents, meta } = data;
+
     this.setState({
-      table: data,
+      documents,
+      meta,
     });
   }
 
@@ -55,14 +59,16 @@ export default class TableSearch extends Component {
     }
 
     const data = await fetch(`${queryPrefix}${querySufix}`).then(response => response.json());
-
+    const { documents, meta } = data;
+    console.log(documents);
     this.setState({
-      table: data,
+      documents,
+      meta,
     });
   }
 
   render() {
-    const { table } = this.state;
+    const { documents, meta } = this.state;
 
     return (
       <div id="lot-container">
@@ -77,7 +83,7 @@ export default class TableSearch extends Component {
             <input type="submit" value="Find lots" />
           </form>
         </div>
-        <Table content={table} />
+        <Table documents={documents} meta={meta} />
       </div>
     );
   }
