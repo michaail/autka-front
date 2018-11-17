@@ -5,25 +5,29 @@ import ReactTable from 'react-table';
 export default class Table extends Component {
   constructor(props) {
     super(props);
-    const { documents } = this.props;
+    // const { make, model, lotID } = this.props;
     this.state = {
-      documents,
+      documents: [],
       meta: {},
     };
 
     this.handleChange = this.handleChange.bind(this);
   }
 
-  componentWillReceiveProps(newProps) {
-    const { documents, meta } = newProps;
-    this.setState({
-      documents,
-      meta,
-    });
-  }
+  // componentWillReceiveProps(prop) {
+  //   // resetowanie stanu do zera page
+  //   console.log('recvProps');
+  //   const { make, model, lotID } = this.props;
+  //   if (prop.make !== make) {
+
+  //   }
+
+  //   fetch('http://localhost:3001/api/lots');
+  // }
 
   handleChange(state, instance) {
-    fetch(`http://localhost:3001/api/lots?page=${state.page + 1}&per_page=${state.pageSize}`)
+    console.log('handleChange');
+    fetch(`http://ec2-34-248-234-92.eu-west-1.compute.amazonaws.com:3001/api/lots?page=${state.page + 1}&per_page=${state.pageSize}`)
       .then(recvData => recvData.json())
       .then((json) => {
         const { documents, meta } = json;
@@ -36,6 +40,13 @@ export default class Table extends Component {
 
   render() {
     const { documents, meta } = this.state;
+    const locationDict = {
+      201: 'Toronto',
+      202: 'London',
+      205: 'Montreal',
+      206: 'Montcon',
+      207: 'Halifax',
+    };
 
     console.log('render');
     const tab = (
@@ -49,7 +60,7 @@ export default class Table extends Component {
           {
             Header: 'LotID',
             accessor: 'lotID',
-
+            Cell: e => <a href={`http://www.copart.ca/lot/${e.value}`} target="_blank" rel="noopener noreferrer">{e.value}</a>,
           },
           {
             Header: 'Producent',
@@ -86,6 +97,7 @@ export default class Table extends Component {
           {
             Header: 'Lokacja',
             accessor: 'location',
+            Cell: e => <div>{ locationDict[e.value] }</div>,
           },
         ]}
 
