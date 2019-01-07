@@ -1,0 +1,23 @@
+.ant-table-thead > tr > th{
+  font-weight: bold;
+  background-color: grey;
+  font-size: 16px;
+}
+
+.ant-table-small > .ant-table-content > .ant-table-body {
+  margin-right: 16px;
+  margin-left: 16px;
+}
+
+.ant-table-small > .ant-table-content > .ant-table-header > table > .ant-table-thead > tr > th, .ant-table-small > .ant-table-content > .ant-table-body > table > .ant-table-thead > tr > th, .ant-table-small > .ant-table-content > .ant-table-scroll > .ant-table-header > table > .ant-table-thead > tr > th, .ant-table-small > .ant-table-content > .ant-table-scroll > .ant-table-body > table > .ant-table-thead > tr > th, .ant-table-small > .ant-table-content > .ant-table-fixed-left > .ant-table-header > table > .ant-table-thead > tr > th, .ant-table-small > .ant-table-content > .ant-table-fixed-right > .ant-table-header > table > .ant-table-thead > tr > th, .ant-table-small > .ant-table-content > .ant-table-fixed-left > .ant-table-body-outer > .ant-table-body-inner > table > .ant-table-thead > tr > th, .ant-table-small > .ant-table-content > .ant-table-fixed-right > .ant-table-body-outer > .ant-table-body-inner > table > .ant-table-thead > tr > th {
+  background-color: #e8e8e8;
+}
+
+.ant-table-tbody {
+  font-size: 15px;
+  color: black;
+}
+
+.ant-table-tbody tr:nth-child(even) {
+  background-color: #fafafafa
+}
