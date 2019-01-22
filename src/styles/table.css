@@ -21,3 +21,7 @@
 .ant-table-tbody tr:nth-child(even) {
   background-color: #fafafafa
 }
+
+.ant-progress-outer {
+  width: 98%;
+}

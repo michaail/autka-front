@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
 import React, { Component } from 'react';
-import { Table } from 'antd';
+import { Table, Progress } from 'antd';
 
 import 'antd/dist/antd.css';
 import '../styles/table.css';
@@ -23,11 +23,9 @@ export default class TableNew extends Component {
     width: '9%',
   }, {
     title: 'Marka',
-    key: 'make',
     dataIndex: 'make',
     width: '9%',
-    onFilter: (value, record) => record.make.indexOf(value) === 0,
-    // sorter: (a, b) => console.log(a),
+    key: 'make',
   }, {
     title: 'Model',
     key: 'model',
@@ -57,6 +55,12 @@ export default class TableNew extends Component {
     title: 'Kupiec',
     key: 'buyer',
     dataIndex: 'buyer',
+    filters: [
+      { text: 'Ontario', value: 'ON' },
+      { text: 'Quebec', value: 'QC' },
+      { text: 'Polska', value: 'PL' },
+      { text: 'Ukraina', value: 'UA' },
+    ],
     width: '7%',
   }, {
     title: 'Uszkodzenia',
@@ -88,84 +92,147 @@ export default class TableNew extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      columns: this.columns,
       docs: [],
       meta: {},
-      makes: [],
-      make: null,
-      models: [],
-      loading: false,
-    };
-    this.initial = {
-      page: 0,
-      pageSize: 20,
+      makes: {},
+      pagination: {
+        pageSize: 20,
+        showQuickJumper: true,
+        showSizeChanger: true,
+      },
     };
 
     this.componentDidMount = this.componentDidMount.bind(this);
     // this.onChange = this.onChange.bind(this);
     this.getPage = this.getPage.bind(this);
+    this.getMakes = this.getMakes.bind(this);
   }
 
   async componentDidMount() {
-    const { pageSize } = this.initial;
+    this.getMakes();
+    const pageSize = 20;
     await this.getPage(1, pageSize);
-    const { meta } = this.state;
-    const { pagesCount } = meta;
-    for (let i = 2; i <= pagesCount; i += 1) {
-      await this.getPage(i, pageSize);
-    }
-    console.log(this.state.docs[0].priceInt);
-  }
 
+    this.setState((state) => {
+      const {
+        columns, makes, pagination, meta,
+      } = state;
+
+      const keys = Object.keys(makes).sort();
+      const filterList = [];
+      keys.forEach((key) => {
+        filterList.push({ text: key, value: key });
+      });
+      columns[1].filters = filterList;
+
+      pagination.pageSize = meta.docLength;
+      pagination.total = meta.totalCount;
+      return {
+        columns,
+      };
+    });
+  }
 
   getMakes() {
     fetch(`${conf.config.API_URL}/api/makes`)
       .then(recvData => recvData.json())
       .then((json) => {
-        const { documents } = json;
         this.setState({
-          makes: documents,
+          makes: json,
         });
       });
   }
 
-  async getPage(page, pageSize) {
-    await fetch(`${conf.config.API_URL}/api/lots?page=${page}&per_page=${pageSize}`)
-      .then(recvData => recvData.json())
-      .then((json) => {
-        const { documents, meta } = json;
-        const { docs } = this.state;
-        docs.push(...documents);
-        this.setState({
-          docs,
-          meta,
+
+  async getPage(page, pageSize, query) {
+    let filterString = '';
+    if (query) {
+      if (query.make) {
+        query.make.forEach((m) => {
+          filterString += `&make=${m}`;
         });
-      });
+      }
+      if (query.model) {
+        query.model.forEach((m) => {
+          filterString += `&model=${m}`;
+        });
+      }
+      if (query.buyer) {
+        query.buyer.forEach((b) => {
+          filterString += `&buyer=${b}`;
+        });
+      }
+    }
+    console.log(filterString);
+
+    const recvData = await fetch(`${conf.config.API_URL}/api/lots?page=${page}&per_page=${pageSize}${filterString}`);
+    const data = await recvData.json();
+
+    const { pagination } = this.state;
+    const { documents, meta } = data;
+
+    pagination.total = meta.totalCount;
+
+    this.setState({
+      docs: documents,
+      meta,
+      pagination,
+    });
+  }
+
+  handleTableChange = (pagination, filters, sorter) => {
+    console.log(filters);
+    const pager = { ...this.state.pagination };
+    pager.current = pagination.current;
+    this.setState({
+      pagination: pager,
+    });
+
+    if (filters) {
+      if (filters.make) {
+        this.setState((state) => {
+          const { columns, makes } = state;
+
+          if (filters.make.length === 1) {
+            const modelList = makes[filters.make[0]].sort();
+            const filterList = [];
+            modelList.forEach((key) => {
+              filterList.push({ text: key, value: key });
+            });
+            columns[2].filters = filterList;
+          } else {
+            columns[2].filters = {};
+          }
+          return {
+            columns,
+          };
+        });
+      }
+    }
+
+    if (filters.make) {
+      if (filters.make.length === 0) {
+        // eslint-disable-next-line no-param-reassign
+        filters.model = [];
+      }
+    }
+
+    console.log(pagination.current);
+    this.getPage(pagination.current, 20, filters);
   }
 
 
   render() {
-    const { docs, meta } = this.state;
+    const { docs, columns } = this.state;
 
-    const {
-      totalCount, page, docLength, pagesCount,
-    } = meta;
 
-    let pageSize = docLength;
-    if (page === pagesCount) {
-      pageSize = 20;
-    }
-
-    const pagination = {
-      pageSize,
-      total: totalCount,
-      showQuickJumper: true,
-      showSizeChanger: true,
-      // onChange: this.onChange,
-      // onShowSizeChange: this.onChange,
-    };
+    const { pagination } = this.state;
 
     return (
-      <Table dataSource={docs} columns={this.columns} pagination={pagination} size="small" />
+      <div>
+        <Table dataSource={docs} columns={columns} pagination={pagination} onChange={this.handleTableChange} size="small" />
+      </div>
     );
   }
 }
