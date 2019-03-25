@@ -5,12 +5,18 @@ import MenuStrip from './MenuStrip';
 import TableSearch from './TableSearch';
 
 export default class Main extends Component {
+  
+
+  handleChildFunc() {
+    
+  }
+  
   render() {
     return (
       <div>
         <h1>Main container</h1>
-        <MenuStrip />
-        {/* <TableSearch /> */}
+        <MenuStrip myFunc={this.handleChildFunc}/>
+        <TableSearch /> 
         <TableNew />
       </div>
     );
