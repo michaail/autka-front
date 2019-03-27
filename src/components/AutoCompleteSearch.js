@@ -1,29 +1,28 @@
 import React, { Component } from 'react';
-import { AutoComplete } from 'antd'
+import PropTypes from 'prop-types';
+
+import { AutoComplete } from 'antd';
 // import ReactTable from 'react-table';
 
 import 'react-table/react-table.css';
 
+
 function onSelect(value) {
-  console.log('onSelect', value)
+  console.log('onSelect', value);
 }
 
 export default class AutoCompleteSearch extends Component {
   state = {
     dataSource: [],
   }
-  
+
   handleSearch = (value) => {
 
   }
 
-  
-
-  
-
-
   render() {
     const { dataSource } = this.state;
+    const { placeholder } = this.props;
 
     return (
       <AutoComplete
@@ -31,8 +30,17 @@ export default class AutoCompleteSearch extends Component {
         style={{ width: 200 }}
         onSelect={onSelect}
         onSearch={this.handleSearch}
-        placeholder="make"
+        placeholder={placeholder}
       />
     );
   }
 }
+
+// props validation
+AutoCompleteSearch.propTypes = {
+  placeholder: PropTypes.string,
+};
+
+AutoCompleteSearch.defaultProps = {
+  placeholder: '',
+};

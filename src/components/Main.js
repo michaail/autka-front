@@ -1,24 +1,39 @@
 import React, { Component } from 'react';
-// import Table from './Table';
-import TableNew from './TableNew';
-import MenuStrip from './MenuStrip';
-import TableSearch from './TableSearch';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+
+import { Menu } from 'antd';
+
+import TableSearchParent from './TableSearchParent';
+import Lot from './Lot';
+// import { from } from 'rxjs';
 
 export default class Main extends Component {
-  
-
-  handleChildFunc() {
-    
-  }
-  
   render() {
     return (
       <div>
-        <h1>Main container</h1>
-        <MenuStrip myFunc={this.handleChildFunc}/>
-        <TableSearch /> 
-        <TableNew />
+        <Router>
+          <HeaderMenu />
+
+          <Route exact path="/" component={TableSearchParent} />
+          <Route path="/lot" component={Lot} />
+
+        </Router>
+
+
       </div>
     );
   }
+}
+
+function HeaderMenu() {
+  return (
+    <Menu mode="horizontal" defaultSelectedKeys={['table']}>
+      <Menu.Item key="table">
+        <Link to="/">Tabela</Link>
+      </Menu.Item>
+      <Menu.Item key="auctions">
+        <Link to="/lot">Lot</Link>
+      </Menu.Item>
+    </Menu>
+  );
 }

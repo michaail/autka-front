@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
 import React, { Component } from 'react';
-import { Table, Progress } from 'antd';
+import { Table } from 'antd';
 
 import 'antd/dist/antd.css';
 import '../styles/table.css';
@@ -13,6 +13,7 @@ export default class TableNew extends Component {
     205: 'Montreal',
     206: 'Montcon',
     207: 'Halifax',
+    295: 'Atlantic',
   };
 
   columns = [{
@@ -183,6 +184,7 @@ export default class TableNew extends Component {
 
   handleTableChange = (pagination, filters, sorter) => {
     console.log(filters);
+
     const pager = { ...this.state.pagination };
     pager.current = pagination.current;
     this.setState({
