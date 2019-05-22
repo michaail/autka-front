@@ -14,7 +14,7 @@ export default class TableSearch extends Component {
     this.state = {
       filters: {},
       makes: {},
-      model: '',
+      make: '',
       lotID: '',
     };
   }
@@ -33,8 +33,16 @@ export default class TableSearch extends Component {
       });
   }
 
+  handleSearch() {
+
+  }
+
+  handleReset() {
+
+  }
+
   render() {
-    const { makes } = this.state;
+    const { makes, make } = this.state;
 
     return (
       <div className="TableSearch">
@@ -43,16 +51,16 @@ export default class TableSearch extends Component {
             <AutoCompleteSearch placeholder="Ford" dataSet={makes.keys} />
           </Form.Item>
           <Form.Item label="Model">
-            <AutoCompleteSearch placeholder="Escape" dataSet />
+            <AutoCompleteSearch placeholder="Escape" dataSet={makes[make]} />
           </Form.Item>
           <Form.Item label="LotID">
             <AutoCompleteSearch placeholder="LotID" />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" icon="search">Szukaj</Button>
+            <Button type="primary" icon="search" onClick={this.handleSearch}>Szukaj</Button>
           </Form.Item>
           <Form.Item>
-            <Button type="danger" icon="delete">Wyczyść</Button>
+            <Button type="danger" icon="delete" onClick={this.handleReset}>Wyczyść</Button>
           </Form.Item>
         </Form>
 

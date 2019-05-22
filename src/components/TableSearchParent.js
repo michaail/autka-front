@@ -2,11 +2,27 @@ import React, { Component } from 'react';
 
 import TableSearch from './TableSearch';
 import TableNew from './TableNew';
-// import ReactTable from 'react-table';
+import conf from '../conf';
 
-import 'react-table/react-table.css';
 
 export default class TableSearchParent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      makes: {},
+    };
+  }
+
+  getMakes() {
+    fetch(`${conf.config.API_URL}/api/makes`)
+      .then(recvData => recvData.json())
+      .then((json) => {
+        this.setState({
+          makes: json,
+        });
+      });
+  }
+
   render() {
     return (
       <div>
