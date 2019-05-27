@@ -69,6 +69,19 @@ export default class TableNew extends Component {
     key: 'damage',
     dataIndex: 'details.Primary Damage',
     width: 'auto',
+    filters: [
+      { text: 'Przód', value: 'FRONT END' },
+      { text: 'Tył', value: 'REAR END' },
+      { text: 'Bok', value: 'SIDE' },
+      { text: 'All over', value: 'ALL OVER' },
+      { text: 'Spalony', value: 'BURN' },
+      { text: 'Podwozie', value: 'UNDERCARRIAGE' },
+      { text: 'Zalany', value: 'WATER/FLOOD' },
+      { text: 'Zużycie', value: 'NORMAL WEAR' },
+      { text: 'Mechaniczne', value: 'MECHANICAL' },
+      { text: 'Przytarcia', value: 'MINOR DENT/SCRATCHES' },
+
+    ],
   }, {
     title: 'Lokalizacja',
     key: 'location',
