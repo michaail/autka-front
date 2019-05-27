@@ -1,6 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import React, { Component } from 'react';
 import { Table } from 'antd';
+import PropTypes, { func } from 'prop-types';
 
 import 'antd/dist/antd.css';
 import '../styles/table.css';
@@ -74,6 +75,15 @@ export default class TableNew extends Component {
     dataIndex: 'location',
     width: '9%',
     render: text => <div>{this.locationDict[text]}</div>,
+    filters: [
+      { text: 'Toronto', value: 201 },
+      { text: 'London', value: 202 },
+      { text: 'Montreal', value: 205 },
+      { text: 'Montcon', value: 206 },
+      { text: 'Halifax', value: 207 },
+      { text: 'Atlantic', value: 295 },
+    ]
+    ,
   }, {
     title: 'Data',
     key: 'createdAt',
@@ -95,102 +105,26 @@ export default class TableNew extends Component {
     this.state = {
       columns: this.columns,
       docs: [],
-      meta: {},
-      makes: {},
       pagination: {
         pageSize: 20,
         showQuickJumper: true,
-        showSizeChanger: true,
+        // showSizeChanger: true,
       },
     };
-
-    this.componentDidMount = this.componentDidMount.bind(this);
-    // this.onChange = this.onChange.bind(this);
-    this.getPage = this.getPage.bind(this);
-    this.getMakes = this.getMakes.bind(this);
-  }
-
-  async componentDidMount() {
-    this.getMakes();
-    const pageSize = 20;
-    await this.getPage(1, pageSize);
-
-    this.setState((state) => {
-      const {
-        columns, makes, pagination, meta,
-      } = state;
-
-      const keys = Object.keys(makes).sort();
-      const filterList = [];
-      keys.forEach((key) => {
-        filterList.push({ text: key, value: key });
-      });
-      columns[1].filters = filterList;
-
-      pagination.pageSize = meta.docLength;
-      pagination.total = meta.totalCount;
-      return {
-        columns,
-      };
-    });
-  }
-
-  getMakes() {
-    fetch(`${conf.config.API_URL}/api/makes`)
-      .then(recvData => recvData.json())
-      .then((json) => {
-        this.setState({
-          makes: json,
-        });
-      });
+    this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
+    this.handleTableChange = this.handleTableChange.bind(this);
   }
 
 
-  async getPage(page, pageSize, query) {
-    let filterString = '';
-    if (query) {
-      if (query.make) {
-        query.make.forEach((m) => {
-          filterString += `&make=${m}`;
-        });
-      }
-      if (query.model) {
-        query.model.forEach((m) => {
-          filterString += `&model=${m}`;
-        });
-      }
-      if (query.buyer) {
-        query.buyer.forEach((b) => {
-          filterString += `&buyer=${b}`;
-        });
-      }
-    }
-    console.log(filterString);
-
-    const recvData = await fetch(`${conf.config.API_URL}/api/lots?page=${page}&per_page=${pageSize}${filterString}`);
-    const data = await recvData.json();
-
-    const { pagination } = this.state;
-    const { documents, meta } = data;
-
-    pagination.total = meta.totalCount;
-
-    this.setState({
-      docs: documents,
-      meta,
-      pagination,
-    });
+  componentWillReceiveProps(nextProp) {
+    const { docs, pagination: pageInfo } = nextProp;
+    this.setState(state => ({
+      docs,
+      pagination: pageInfo,
+    }));
   }
 
-  handleTableChange = (pagination, filters, sorter) => {
-    console.log(filters);
-
-    const pager = { ...this.state.pagination };
-    pager.current = pagination.current;
-    this.setState({
-      pagination: pager,
-    });
-
+  handleTableChange(pagination, filters, sorter) {
     if (filters) {
       if (filters.make) {
         this.setState((state) => {
@@ -219,17 +153,12 @@ export default class TableNew extends Component {
         filters.model = [];
       }
     }
-
-    console.log(pagination.current);
-    this.getPage(pagination.current, 20, filters);
+    const { onTableChange } = this.props;
+    onTableChange(pagination, filters, sorter);
   }
 
-
   render() {
-    const { docs, columns } = this.state;
-
-
-    const { pagination } = this.state;
+    const { docs, columns, pagination } = this.state;
 
     return (
       <div>
@@ -238,3 +167,12 @@ export default class TableNew extends Component {
     );
   }
 }
+
+// props validation
+TableNew.propTypes = {
+  onTableChange: PropTypes.func,
+};
+
+TableNew.defaultProps = {
+  onTableChange: () => { },
+};

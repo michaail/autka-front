@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import { Menu } from 'antd';
 
 import TableSearchParent from './TableSearchParent';
-import Lot from './Lot';
+import AuctionParent from './AuctionParent';
 // import { from } from 'rxjs';
 
 export default class Main extends Component {
@@ -15,7 +15,7 @@ export default class Main extends Component {
           <HeaderMenu />
 
           <Route exact path="/" component={TableSearchParent} />
-          <Route path="/lot" component={Lot} />
+          <Route path="/lot" component={AuctionParent} />
 
         </Router>
 
@@ -32,7 +32,7 @@ function HeaderMenu() {
         <Link to="/">Tabela</Link>
       </Menu.Item>
       <Menu.Item key="auctions">
-        <Link to="/lot">Lot</Link>
+        <Link to="/lot">Aukcje</Link>
       </Menu.Item>
     </Menu>
   );
