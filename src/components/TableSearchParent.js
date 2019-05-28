@@ -22,9 +22,9 @@ export default class TableSearchParent extends Component {
       search: {},
       docs: [],
       pagination: {},
+      filters: {},
     };
-    this.handleSearch = this.handleSearch.bind(this);
-    this.handleSearchReset = this.handleSearchReset.bind(this);
+
     this.getPage = this.getPage.bind(this);
     this.handleTableChange = this.handleTableChange.bind(this);
   }
@@ -65,15 +65,25 @@ export default class TableSearchParent extends Component {
     });
   }
 
-  async searchPage(pageData, search, filters) {
+  searchPage = async (pageData, search, filters, sorters) => {
+    console.log('search');
+    console.log(pageData);
+    console.log(search);
+    console.log(filters);
     const recvData = await fetch(`${conf.config.API_URL}/api/lots/search`, {
       method: 'POST',
-      body: {
-        pageData,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        pagination: pageData,
         search,
         filters,
-      },
+        sorters,
+      }),
     });
+    console.log(recvData);
     const data = await recvData.json();
 
     const { pagination } = this.state;
@@ -88,13 +98,17 @@ export default class TableSearchParent extends Component {
     });
   }
 
-  handleSearch(value) {
+  handleSearch = (value) => {
+    console.log(value);
     this.setState({
       search: value,
     });
+    const { pagination, search, filters } = this.state;
+    console.log(value);
+    this.searchPage(pagination, value, filters);
   }
 
-  handleSearchReset() {
+  handleSearchReset = () => {
     this.setState({
       search: {},
     });
@@ -102,17 +116,21 @@ export default class TableSearchParent extends Component {
 
   handleTableChange(pagination, filters, sorter) {
     const { search } = this.state;
+    this.setState({
+      pagination,
+      filters,
+    });
     const { pageSize, current, total } = pagination;
     if (Object.entries(search).length === 0 && search.constructor === Object) {
       this.getPage(current, pageSize, filters);
     } else {
-
+      this.searchPage(pagination, search, filters, sorter);
     }
   }
 
   render() {
     const {
-      makes, search: filters, docs, pagination,
+      makes, docs, pagination,
     } = this.state;
 
     return (
@@ -124,7 +142,6 @@ export default class TableSearchParent extends Component {
         <TableNew
           docs={docs}
           pagination={pagination}
-          filters={filters}
           onTableChange={this.handleTableChange}
         />
       </div>

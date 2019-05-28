@@ -57,6 +57,7 @@ export default class AutoCompleteSearch extends Component {
         }
         placeholder={placeholder}
         value={value}
+        allowClear
       />
     );
   }

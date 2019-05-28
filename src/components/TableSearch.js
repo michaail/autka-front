@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 
-import { Form, Button, Input } from 'antd';
+import {
+  Form, Button, Input, Row, Col, InputNumber,
+} from 'antd';
 
 import PropTypes, { func } from 'prop-types';
 import AutoCompleteSearch from './AutoCompleteSearch';
@@ -19,6 +21,11 @@ export default class TableSearch extends Component {
       inputModel: '',
       clearMakeCtr: 0,
       clearModelCtr: 0,
+      expand: false,
+      minYear: null,
+      maxYear: null,
+      minPrice: null,
+      maxPrice: null,
     };
     this.handleSearch = this.handleSearch.bind(this);
     this.handleReset = this.handleReset.bind(this);
@@ -28,14 +35,22 @@ export default class TableSearch extends Component {
 
     this.handleMakeInputLeave = this.handleMakeInputLeave.bind(this);
     this.handleModelInputLeave = this.handleModelInputLeave.bind(this);
+
+    this.toggle = this.toggle.bind(this);
   }
 
   handleSearch() {
     const { onSearch } = this.props;
-    const { inputMake, inputModel } = this.state;
+    const {
+      inputMake, inputModel, minYear, maxYear, minPrice, maxPrice,
+    } = this.state;
     const search = {
       make: inputMake,
       model: inputModel,
+      minYear,
+      maxYear,
+      minPrice,
+      maxPrice,
     };
     onSearch(search);
   }
@@ -49,6 +64,10 @@ export default class TableSearch extends Component {
       inputModel: '',
       clearMakeCtr: prev.clearMakeCtr + 1,
       clearModelCtr: prev.clearModelCtr + 1,
+      minYear: null,
+      maxYear: null,
+      minPrice: null,
+      maxPrice: null,
     }));
   }
 
@@ -77,38 +96,102 @@ export default class TableSearch extends Component {
     });
   }
 
+  toggle() {
+    const { expand } = this.state;
+    this.setState({
+      expand: !expand,
+    });
+  }
+
 
   render() {
-    const { selectedMake, clearMakeCtr, clearModelCtr } = this.state;
+    const {
+      selectedMake, clearMakeCtr, clearModelCtr, expand, minYear, maxYear, minPrice, maxPrice,
+    } = this.state;
     const { makes } = this.props;
 
     return (
       <div className="TableSearch">
-        <Form layout="inline">
-          <Form.Item label="Marka">
-            <AutoCompleteSearch
-              placeholder="Ford"
-              dataSource={Object.keys(makes).sort()}
-              onSelectedValue={this.handleMakeSelected}
-              onInputLeave={this.handleMakeInputLeave}
-              clear={clearMakeCtr}
-            />
-          </Form.Item>
-          <Form.Item label="Model">
-            <AutoCompleteSearch
-              placeholder="Escape"
-              dataSource={makes[selectedMake] !== undefined ? makes[selectedMake].sort() : undefined}
-              onSelectedValue={this.handleModelSelected}
-              onInputLeave={this.handleModelInputLeave}
-              clear={clearModelCtr}
-            />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" icon="search" onClick={this.handleSearch}>Szukaj</Button>
-          </Form.Item>
-          <Form.Item>
-            <Button type="danger" icon="delete" onClick={this.handleReset}>Wyczyść</Button>
-          </Form.Item>
+        <Form layout="inline" className="ant-advanced-search-form">
+          <Row>
+            <Col span={18} offset={4}>
+              <Form.Item label="Marka">
+                <AutoCompleteSearch
+                  placeholder="Ford"
+                  dataSource={Object.keys(makes).sort()}
+                  onSelectedValue={this.handleMakeSelected}
+                  onInputLeave={this.handleMakeInputLeave}
+                  clear={clearMakeCtr}
+                />
+              </Form.Item>
+              <Form.Item label="Model">
+                <AutoCompleteSearch
+                  placeholder="Escape"
+                  dataSource={makes[selectedMake] !== undefined ? makes[selectedMake].sort() : undefined}
+                  onSelectedValue={this.handleModelSelected}
+                  onInputLeave={this.handleModelInputLeave}
+                  clear={clearModelCtr}
+                />
+              </Form.Item>
+
+
+              <Form.Item>
+                <Button type="primary" icon="search" onClick={this.handleSearch}>Szukaj</Button>
+              </Form.Item>
+              <Form.Item>
+                <Button type="danger" icon="delete" onClick={this.handleReset}>Wyczyść</Button>
+              </Form.Item>
+              <Form.Item>
+                <Button
+                  type="dashed"
+                  icon={expand ? 'up' : 'down'}
+                  onClick={this.toggle}
+                >
+                  {expand ? 'Mniej' : 'Więcej'}
+                </Button>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row style={{ display: expand ? 'block' : 'none' }}>
+            <Col span={5} offset={4}>
+              <Form.Item label="Rok od">
+                <InputNumber
+                  style={{ width: 100 }}
+                  onChange={(val) => { this.setState({ minYear: val === '' ? null : val }); }}
+                  value={minYear}
+                />
+              </Form.Item>
+              <Form.Item label="do">
+                <InputNumber
+                  style={{ width: 100 }}
+                  onChange={(val) => { this.setState({ maxYear: val === '' ? null : val }); }}
+                  value={maxYear}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={5}>
+              <Form.Item label="Cena od">
+                <InputNumber
+                  style={{ width: 100 }}
+                  formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                  step={100}
+                  onChange={(val) => { this.setState({ minPrice: val === '' ? null : val }); }}
+                  value={minPrice}
+                />
+              </Form.Item>
+              <Form.Item label="do">
+                <InputNumber
+                  style={{ width: 100 }}
+                  formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                  step={100}
+                  onChange={(val) => { this.setState({ maxPrice: val === '' ? null : val }); }}
+                  value={maxPrice}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
         </Form>
       </div>
     );

@@ -14,7 +14,11 @@ code {
 }
 
 .TableSearch {
-  text-align: center
+  /* text-align: center */
+}
+
+.SearchControls {
+  text-align: right
 }
 
 .App-logo {

@@ -1,18 +1,31 @@
 import React, { Component } from 'react';
-
 import { Input, Button, Form } from 'antd';
 
 import TableNew from './TableNew';
+
+import conf from '../conf';
 
 export default class AuctionParent extends Component {
   constructor() {
     super();
     this.state = {
       value: '',
+      docs: '',
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.getLot = this.getLot.bind(this);
+  }
+
+  async getLot(lotID) {
+    const recvData = await fetch(`${conf.config.API_URL}/api/lots/${lotID}`);
+    const data = await recvData.json();
+
+    console.log(data);
+    this.setState({
+      docs: data,
+    });
   }
 
   handleChange(e) {
@@ -24,14 +37,17 @@ export default class AuctionParent extends Component {
 
   handleSubmit() {
     const { value } = this.state;
-    console.log(value);
+    this.getLot(value);
   }
 
+
   render() {
+    const { docs } = this.state;
+
     return (
       <div>
         <div className="TableSearch">
-          <Form layout="inline" onSubmit={this.handleSubmit}>
+          <Form layout="inline">
             <Form.Item label="LotID">
               <Input onChange={this.handleChange} />
             </Form.Item>
@@ -43,7 +59,7 @@ export default class AuctionParent extends Component {
             </Form.Item>
           </Form>
         </div>
-        <TableNew />
+        <TableNew docs={docs} />
       </div>
     );
   }
