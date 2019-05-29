@@ -123,6 +123,7 @@ export default class TableNew extends Component {
         showQuickJumper: true,
         // showSizeChanger: true,
       },
+      loading: false,
     };
     this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
     this.handleTableChange = this.handleTableChange.bind(this);
@@ -130,52 +131,62 @@ export default class TableNew extends Component {
 
 
   componentWillReceiveProps(nextProp) {
-    const { docs, pagination: pageInfo } = nextProp;
-    this.setState(state => ({
+    const { docs, pagination: pageInfo, loading } = nextProp;
+    this.setState({
       docs,
       pagination: pageInfo,
-    }));
+      loading,
+    });
   }
 
   handleTableChange(pagination, filters, sorter) {
-    if (filters) {
-      if (filters.make) {
-        this.setState((state) => {
-          const { columns, makes } = state;
+    // if (filters) {
+    //   if (filters.make) {
+    //     this.setState((state) => {
+    //       const { columns, makes } = state;
 
-          if (filters.make.length === 1) {
-            const modelList = makes[filters.make[0]].sort();
-            const filterList = [];
-            modelList.forEach((key) => {
-              filterList.push({ text: key, value: key });
-            });
-            columns[2].filters = filterList;
-          } else {
-            columns[2].filters = {};
-          }
-          return {
-            columns,
-          };
-        });
-      }
-    }
+    //       if (filters.make.length === 1) {
+    //         const modelList = makes[filters.make[0]].sort();
+    //         const filterList = [];
+    //         modelList.forEach((key) => {
+    //           filterList.push({ text: key, value: key });
+    //         });
+    //         columns[2].filters = filterList;
+    //       } else {
+    //         columns[2].filters = {};
+    //       }
+    //       return {
+    //         columns,
+    //       };
+    //     });
+    //   }
+    // }
 
-    if (filters.make) {
-      if (filters.make.length === 0) {
-        // eslint-disable-next-line no-param-reassign
-        filters.model = [];
-      }
-    }
+    // if (filters.make) {
+    //   if (filters.make.length === 0) {
+    //     // eslint-disable-next-line no-param-reassign
+    //     filters.model = [];
+    //   }
+    // }
     const { onTableChange } = this.props;
     onTableChange(pagination, filters, sorter);
   }
 
   render() {
-    const { docs, columns, pagination } = this.state;
+    const {
+ docs, columns, pagination, loading 
+} = this.state;
 
     return (
       <div>
-        <Table dataSource={docs} columns={columns} pagination={pagination} onChange={this.handleTableChange} size="small" />
+        <Table
+          dataSource={docs}
+          columns={columns}
+          pagination={pagination}
+          onChange={this.handleTableChange}
+          size="small"
+          loading={loading}
+        />
       </div>
     );
   }
@@ -184,8 +195,10 @@ export default class TableNew extends Component {
 // props validation
 TableNew.propTypes = {
   onTableChange: PropTypes.func,
+  loading: PropTypes.bool,
 };
 
 TableNew.defaultProps = {
   onTableChange: () => { },
+  loading: false,
 };

@@ -23,6 +23,8 @@ export default class TableSearchParent extends Component {
       docs: [],
       pagination: {},
       filters: {},
+      sorter: {},
+      loading: false,
     };
 
     this.getPage = this.getPage.bind(this);
@@ -62,6 +64,7 @@ export default class TableSearchParent extends Component {
       docs: documents,
       meta,
       pagination,
+      loading: false,
     });
   }
 
@@ -86,24 +89,29 @@ export default class TableSearchParent extends Component {
     console.log(recvData);
     const data = await recvData.json();
 
-    const { pagination } = this.state;
+    // const { pagination } = this.state;
     const { documents, meta } = data;
 
-    pagination.total = meta.totalCount;
+    // pagination.total = meta.totalCount;
 
-    this.setState({
+    this.setState(prev => ({
       docs: documents,
       meta,
-      pagination,
-    });
+      pagination: {
+        ...prev.pagination,
+        total: meta.totalCount,
+      },
+      loading: false,
+    }));
   }
 
   handleSearch = (value) => {
     console.log(value);
     this.setState({
       search: value,
+      loading: true,
     });
-    const { pagination, search, filters } = this.state;
+    const { pagination, filters } = this.state;
     console.log(value);
     this.searchPage(pagination, value, filters);
   }
@@ -119,8 +127,9 @@ export default class TableSearchParent extends Component {
     this.setState({
       pagination,
       filters,
+      sorter,
     });
-    const { pageSize, current, total } = pagination;
+    const { pageSize, current } = pagination;
     if (Object.entries(search).length === 0 && search.constructor === Object) {
       this.getPage(current, pageSize, filters);
     } else {
@@ -130,7 +139,7 @@ export default class TableSearchParent extends Component {
 
   render() {
     const {
-      makes, docs, pagination,
+      makes, docs, pagination, loading,
     } = this.state;
 
     return (
@@ -143,6 +152,7 @@ export default class TableSearchParent extends Component {
           docs={docs}
           pagination={pagination}
           onTableChange={this.handleTableChange}
+          loading={loading}
         />
       </div>
 

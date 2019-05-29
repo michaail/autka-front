@@ -56,6 +56,7 @@ export default class TableSearch extends Component {
   }
 
   handleReset() {
+    const { onSearch } = this.props;
     console.log('clear');
     this.setState(prev => ({
       selectedMake: '',
@@ -69,6 +70,15 @@ export default class TableSearch extends Component {
       minPrice: null,
       maxPrice: null,
     }));
+    // const search = {
+    //   make: null,
+    //   model: null,
+    //   minYear: null,
+    //   maxYear: null,
+    //   minPrice: null,
+    //   maxPrice: null,
+    // };
+    onSearch({});
   }
 
   handleMakeSelected(value) {
@@ -111,7 +121,7 @@ export default class TableSearch extends Component {
     const { makes } = this.props;
 
     return (
-      <div className="TableSearch">
+      <div>
         <Form layout="inline" className="ant-advanced-search-form">
           <Row>
             <Col span={18} offset={4}>
