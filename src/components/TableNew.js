@@ -1,11 +1,10 @@
 /* eslint-disable no-await-in-loop */
 import React, { Component } from 'react';
 import { Table } from 'antd';
-import PropTypes, { func } from 'prop-types';
+import PropTypes from 'prop-types';
 
 import 'antd/dist/antd.css';
 import '../styles/table.css';
-import conf from '../conf';
 
 export default class TableNew extends Component {
   locationDict = {
@@ -174,8 +173,8 @@ export default class TableNew extends Component {
 
   render() {
     const {
- docs, columns, pagination, loading 
-} = this.state;
+      docs, columns, pagination, loading,
+    } = this.state;
 
     return (
       <div>
@@ -195,6 +194,7 @@ export default class TableNew extends Component {
 // props validation
 TableNew.propTypes = {
   onTableChange: PropTypes.func,
+  // eslint-disable-next-line react/no-unused-prop-types
   loading: PropTypes.bool,
 };
 

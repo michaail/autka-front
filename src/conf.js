@@ -8,8 +8,6 @@ const prod = {
 
 const config = process.env.NODE_ENV === 'production' ? prod : test;
 
-console.log(config);
-
 // const config = prod;
 
 export default {

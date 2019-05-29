@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 
 import {
-  Form, Button, Input, Row, Col, InputNumber,
+  Form, Button, Row, Col, InputNumber,
 } from 'antd';
 
-import PropTypes, { func } from 'prop-types';
+import PropTypes from 'prop-types';
 import AutoCompleteSearch from './AutoCompleteSearch';
 
-import conf from '../conf';
 
 import 'react-table/react-table.css';
 
@@ -16,7 +15,6 @@ export default class TableSearch extends Component {
     super();
     this.state = {
       selectedMake: '',
-      selectedModel: '',
       inputMake: '',
       inputModel: '',
       clearMakeCtr: 0,
@@ -31,7 +29,7 @@ export default class TableSearch extends Component {
     this.handleReset = this.handleReset.bind(this);
 
     this.handleMakeSelected = this.handleMakeSelected.bind(this);
-    this.handleModelSelected = this.handleModelSelected.bind(this);
+    // this.handleModelSelected = this.handleModelSelected.bind(this);
 
     this.handleMakeInputLeave = this.handleMakeInputLeave.bind(this);
     this.handleModelInputLeave = this.handleModelInputLeave.bind(this);
@@ -57,10 +55,8 @@ export default class TableSearch extends Component {
 
   handleReset() {
     const { onSearch } = this.props;
-    console.log('clear');
     this.setState(prev => ({
       selectedMake: '',
-      selectedModel: '',
       inputMake: '',
       inputModel: '',
       clearMakeCtr: prev.clearMakeCtr + 1,
@@ -70,14 +66,6 @@ export default class TableSearch extends Component {
       minPrice: null,
       maxPrice: null,
     }));
-    // const search = {
-    //   make: null,
-    //   model: null,
-    //   minYear: null,
-    //   maxYear: null,
-    //   minPrice: null,
-    //   maxPrice: null,
-    // };
     onSearch({});
   }
 
@@ -86,12 +74,6 @@ export default class TableSearch extends Component {
       selectedMake: value,
       clearModelCtr: prev.clearModelCtr + 1,
     }));
-  }
-
-  handleModelSelected(value) {
-    this.setState({
-      selectedModel: value,
-    });
   }
 
   handleMakeInputLeave(value) {
@@ -137,8 +119,8 @@ export default class TableSearch extends Component {
               <Form.Item label="Model">
                 <AutoCompleteSearch
                   placeholder="Escape"
-                  dataSource={makes[selectedMake] !== undefined ? makes[selectedMake].sort() : undefined}
-                  onSelectedValue={this.handleModelSelected}
+                  dataSource={makes[selectedMake] !== undefined
+                    ? makes[selectedMake].sort() : undefined}
                   onInputLeave={this.handleModelInputLeave}
                   clear={clearModelCtr}
                 />

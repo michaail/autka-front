@@ -22,7 +22,6 @@ export default class AuctionParent extends Component {
     const recvData = await fetch(`${conf.config.API_URL}/api/lots/${lotID}`);
     const data = await recvData.json();
 
-    console.log(data);
     this.setState({
       docs: data,
     });

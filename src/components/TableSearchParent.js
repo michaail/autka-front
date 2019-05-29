@@ -23,7 +23,6 @@ export default class TableSearchParent extends Component {
       docs: [],
       pagination: {},
       filters: {},
-      sorter: {},
       loading: false,
     };
 
@@ -32,7 +31,6 @@ export default class TableSearchParent extends Component {
   }
 
   componentDidMount() {
-    console.log('didMount');
     this.getMakes();
     this.getPage(1, 20);
   }
@@ -62,17 +60,12 @@ export default class TableSearchParent extends Component {
     pagination.total = meta.totalCount;
     this.setState({
       docs: documents,
-      meta,
       pagination,
       loading: false,
     });
   }
 
   searchPage = async (pageData, search, filters, sorters) => {
-    console.log('search');
-    console.log(pageData);
-    console.log(search);
-    console.log(filters);
     const recvData = await fetch(`${conf.config.API_URL}/api/lots/search`, {
       method: 'POST',
       headers: {
@@ -86,17 +79,11 @@ export default class TableSearchParent extends Component {
         sorters,
       }),
     });
-    console.log(recvData);
     const data = await recvData.json();
-
-    // const { pagination } = this.state;
     const { documents, meta } = data;
-
-    // pagination.total = meta.totalCount;
 
     this.setState(prev => ({
       docs: documents,
-      meta,
       pagination: {
         ...prev.pagination,
         total: meta.totalCount,
@@ -106,13 +93,11 @@ export default class TableSearchParent extends Component {
   }
 
   handleSearch = (value) => {
-    console.log(value);
     this.setState({
       search: value,
       loading: true,
     });
     const { pagination, filters } = this.state;
-    console.log(value);
     this.searchPage(pagination, value, filters);
   }
 
@@ -127,7 +112,6 @@ export default class TableSearchParent extends Component {
     this.setState({
       pagination,
       filters,
-      sorter,
     });
     const { pageSize, current } = pagination;
     if (Object.entries(search).length === 0 && search.constructor === Object) {
