@@ -52,7 +52,7 @@ export default class TableSearchParent extends Component {
       });
     }
 
-    const recvData = await fetch(`${conf.config.API_URL}/api/lots?page=${page}&per_page=${pageSize}${queryString}`);
+    const recvData = await fetch(`${conf.config.API_URL}/api/lots?page=${page}&pageSize=${pageSize}${queryString}`);
     const data = await recvData.json();
     const { pagination } = this.state;
     const { documents, meta } = data;
@@ -107,15 +107,19 @@ export default class TableSearchParent extends Component {
     });
   }
 
-  handleTableChange(pagination, filters, sorter) {
+  handleTableChange(pageInfo, filters, sorter) {
     const { search } = this.state;
+    const pagination = {
+      page: pageInfo.current,
+      pageSize: pageInfo.pageSize,
+    };
     this.setState({
       pagination,
       filters,
     });
-    const { pageSize, current } = pagination;
+    const { pageSize, page } = pagination;
     if (Object.entries(search).length === 0 && search.constructor === Object) {
-      this.getPage(current, pageSize, filters);
+      this.getPage(page, pageSize, filters);
     } else {
       this.searchPage(pagination, search, filters, sorter);
     }

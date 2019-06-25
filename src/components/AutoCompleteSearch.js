@@ -12,7 +12,7 @@ export default class AutoCompleteSearch extends Component {
     };
     this.onChange = this.onChange.bind(this);
     this.onSelect = this.onSelect.bind(this);
-    this.onLeave = this.onLeave.bind(this);
+    // this.onLeave = this.onLeave.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -25,9 +25,11 @@ export default class AutoCompleteSearch extends Component {
   }
 
   onChange(value) {
+    const { onInputChange } = this.props;
     this.setState({
       value,
     });
+    onInputChange(value);
   }
 
   onSelect(value) {
@@ -35,10 +37,10 @@ export default class AutoCompleteSearch extends Component {
     onSelectedValue(value);
   }
 
-  onLeave(value) {
-    const { onInputLeave } = this.props;
-    onInputLeave(value);
-  }
+  // onLeave(value) {
+  //   const { onInputLeave } = this.props;
+  //   onInputLeave(value);
+  // }
 
   render() {
     const { placeholder, dataSource } = this.props;
@@ -50,7 +52,7 @@ export default class AutoCompleteSearch extends Component {
         style={{ width: 200 }}
         onChange={this.onChange}
         onSelect={this.onSelect}
-        onBlur={this.onLeave}
+
         filterOption={(inputValue, option) =>
           // eslint-disable-next-line implicit-arrow-linebreak
           option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
@@ -69,7 +71,7 @@ AutoCompleteSearch.propTypes = {
   dataSource: PropTypes.arrayOf(PropTypes.string),
   clear: PropTypes.number,
   onSelectedValue: PropTypes.func,
-  onInputLeave: PropTypes.func,
+  onInputChange: PropTypes.func,
 };
 
 AutoCompleteSearch.defaultProps = {
@@ -77,5 +79,5 @@ AutoCompleteSearch.defaultProps = {
   dataSource: [],
   clear: 0,
   onSelectedValue: () => {},
-  onInputLeave: () => {},
+  onInputChange: () => {},
 };

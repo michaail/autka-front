@@ -2,6 +2,8 @@
 import React, { Component } from 'react';
 import { Table } from 'antd';
 import PropTypes from 'prop-types';
+// import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+
 
 import 'antd/dist/antd.css';
 import '../styles/table.css';
@@ -178,6 +180,7 @@ export default class TableNew extends Component {
 
     return (
       <div>
+
         <Table
           dataSource={docs}
           columns={columns}

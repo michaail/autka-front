@@ -7,7 +7,6 @@ import {
 import PropTypes from 'prop-types';
 import AutoCompleteSearch from './AutoCompleteSearch';
 
-
 import 'react-table/react-table.css';
 
 export default class TableSearch extends Component {
@@ -31,13 +30,14 @@ export default class TableSearch extends Component {
     this.handleMakeSelected = this.handleMakeSelected.bind(this);
     // this.handleModelSelected = this.handleModelSelected.bind(this);
 
-    this.handleMakeInputLeave = this.handleMakeInputLeave.bind(this);
-    this.handleModelInputLeave = this.handleModelInputLeave.bind(this);
+    this.handleMakeInputChange = this.handleMakeInputChange.bind(this);
+    this.handleModelInputChange = this.handleModelInputChange.bind(this);
 
     this.toggle = this.toggle.bind(this);
   }
 
-  handleSearch() {
+  handleSearch(e) {
+    e.preventDefault();
     const { onSearch } = this.props;
     const {
       inputMake, inputModel, minYear, maxYear, minPrice, maxPrice,
@@ -76,13 +76,18 @@ export default class TableSearch extends Component {
     }));
   }
 
-  handleMakeInputLeave(value) {
+  handleMakeInputChange(value) {
+    let { clearModelCtr } = this.state;
+    if (value === '') {
+      clearModelCtr += 1;
+    }
     this.setState({
       inputMake: value,
+      clearModelCtr,
     });
   }
 
-  handleModelInputLeave(value) {
+  handleModelInputChange(value) {
     this.setState({
       inputModel: value,
     });
@@ -104,7 +109,7 @@ export default class TableSearch extends Component {
 
     return (
       <div>
-        <Form layout="inline" className="ant-advanced-search-form">
+        <Form layout="inline" className="ant-advanced-search-form" onSubmit={this.handleSearch}>
           <Row>
             <Col span={18} offset={4}>
               <Form.Item label="Marka">
@@ -112,7 +117,7 @@ export default class TableSearch extends Component {
                   placeholder="Ford"
                   dataSource={Object.keys(makes).sort()}
                   onSelectedValue={this.handleMakeSelected}
-                  onInputLeave={this.handleMakeInputLeave}
+                  onInputChange={this.handleMakeInputChange}
                   clear={clearMakeCtr}
                 />
               </Form.Item>
@@ -121,14 +126,14 @@ export default class TableSearch extends Component {
                   placeholder="Escape"
                   dataSource={makes[selectedMake] !== undefined
                     ? makes[selectedMake].sort() : undefined}
-                  onInputLeave={this.handleModelInputLeave}
+                  onInputChange={this.handleModelInputChange}
                   clear={clearModelCtr}
                 />
               </Form.Item>
 
 
               <Form.Item>
-                <Button type="primary" icon="search" onClick={this.handleSearch}>Szukaj</Button>
+                <Button type="primary" htmlType="submit" icon="search" onClick={this.handleSearch}>Szukaj</Button>
               </Form.Item>
               <Form.Item>
                 <Button type="danger" icon="delete" onClick={this.handleReset}>Wyczyść</Button>
