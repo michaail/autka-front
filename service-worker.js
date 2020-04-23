@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/autka-front/precache-manifest.348813c7e8d50afc60ef757aaa73820e.js"
+  "/autka-front/precache-manifest.09fce0da12dbdb004e8d802f7e2e9828.js"
 );
 
 workbox.clientsClaim();

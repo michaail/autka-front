@@ -1,11 +1,11 @@
 self.__precacheManifest = [
   {
-    "revision": "02c25d71d7a468ffa46e",
+    "revision": "df10b8e143185604518a",
     "url": "/autka-front/static/css/main.70a8199d.chunk.css"
   },
   {
-    "revision": "02c25d71d7a468ffa46e",
-    "url": "/autka-front/static/js/main.02c25d71.chunk.js"
+    "revision": "df10b8e143185604518a",
+    "url": "/autka-front/static/js/main.df10b8e1.chunk.js"
   },
   {
     "revision": "fa1336d39271f4967344",
@@ -20,7 +20,7 @@ self.__precacheManifest = [
     "url": "/autka-front/static/js/runtime~main.5d502057.js"
   },
   {
-    "revision": "1e1b5af991cb9ca013d467803c4aa73e",
+    "revision": "58d3ba324a41f86342557fa260a3c0b1",
     "url": "/autka-front/index.html"
   }
 ];
